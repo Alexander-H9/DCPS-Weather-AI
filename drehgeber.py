@@ -27,11 +27,7 @@ while True:
 
     if len(list) > 2:
         list = list[1:]
-
+    print(list)
     if list[0] == 'LOW' and list[1] == 'HIGH':
         k += 1
-        print(k, list)
-    
-
-
-    
+        #print(k, list)
