@@ -11,7 +11,7 @@ class InfluxDB():
     def __init__(self):
         pass
 
-    def sendToInfluxDB(self, name, data):
+    def sendToInfluxDB(self, name, CH0, CH1):
 
         # influx configuration
         ifuser = "grafana"
@@ -30,7 +30,8 @@ class InfluxDB():
                 "measurement": measurement_name,
                 "time": time,
                 "fields": {
-                    "degree": data
+                    "CH0": CH0,
+                    "CH1": CH1
                 }
             }
         ]
