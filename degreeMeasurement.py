@@ -2,7 +2,7 @@
 
 from time import sleep
 import RPi.GPIO as GPIO
-from dbConnection import *
+from dbConnectionDegree import *
 
 class Sensor:
     def __init__(self):
@@ -15,10 +15,6 @@ class Sensor:
 sen = Sensor()
 db = InfluxDB()
 
-# test connection:
-for i in range(10):
-    db.sendToInfluxDB("anemometerTest", i)
-print("data send")
 
 channel1 = 37       # gpio pin 26
 channel2 = 36       # gpio pin 16

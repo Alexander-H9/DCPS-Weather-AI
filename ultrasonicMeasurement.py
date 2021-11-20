@@ -1,6 +1,6 @@
 import PCF8591
 from time import sleep
-from ultrasonic_db import *
+from dbConnectionUltrasonic import *
 
 db = InfluxDB()
 
