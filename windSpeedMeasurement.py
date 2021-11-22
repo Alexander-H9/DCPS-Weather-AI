@@ -7,11 +7,15 @@ from dbConnectionWindSpeed import *
 
 # gpio pin 6
 pin = 31    
-time_interval = 10 		# intervall of sending data to influx in seconds   
+time_interval = 3 		# intervall of sending data to influx in seconds   
+
+def callbackPin(pin):
+    print("Umdrehung")
 
 # Set up GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(pin,GPIO.IN)
+GPIO.add_event_detect(pin, GPIO.RISING, callback=callbackPin)
 
 db = InfluxDB()
 
@@ -20,16 +24,16 @@ db = InfluxDB()
 vane_diameter = float(130)			# durchmesser von cup-mittelpunkt zu cup-mittelpunkt
 
 # Calculate vane circumference in metres (umfang)
-vane_circ = float (vane_diameter/1000)*math.pi
+vane_circ = float(vane_diameter/1000)*math.pi
 
 # Set an anamometer factor to account for inefficiency (value is a guess)
-afactor = float(2.5)
+afactor = float(2.5)		# 0.95
 
 # Start measuring wind speed
 print('Measuring wind speed...')
 
 # Define variables rotations and trigger (trigger = 1 if sensor triggered)
-rotations = float(0)
+rotations = 0
 trigger = 0
 
 # Define variable endtime to be current time in seconds plus time_interval seconds
@@ -49,6 +53,8 @@ while True:
 		if GPIO.input(pin)==0:
 			trigger = 0
 
+		time.sleep(0.01)
+
 	else:
 		# 10 seconds has now finished. But if sensor triggered at start and did not move,
 		# rotations value will be 1, which is wrong, so 
@@ -67,6 +73,7 @@ while True:
 
 		# send data to database
 		db.sendToInfluxDB("windSpeed", windspeed)
+		rotations = 0
 
 
 # # Measurement loop to run for 10 seconds

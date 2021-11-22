@@ -25,8 +25,9 @@ def calculate_degree(counter):
     return int(deg)
 
 def callback_ch3(channel3):
-    sen.calibrate = True
-    print("Sensor is calibrated, DB connection can start now")
+    if sen.calibrate == False:
+        sen.calibrate = True
+        print("Sensor is calibrated, DB connection can start now")
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -70,15 +71,15 @@ while True:
     phase_0 = sen.phase_1
     
     if i > 50:
-        # let degree be always positive
-        if deg < 0:
-            deg += 360
-
         deg = calculate_degree(count)
+        # let degree be always positive
+        print("org-deg: ", deg)
+        if deg < 0:
+            deg = 360+deg
         print("deg: ", deg)
         i = 0
-        deg = calculate_degree(count)
-        print("deg: ", deg)
+        #deg = calculate_degree(count)
+        #print("deg: ", deg)
 
         if sen.calibrate:
             db.sendToInfluxDB("anemometerTest", deg)
