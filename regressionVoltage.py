@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import random
+import math
 
 # get the data
 
@@ -28,6 +29,30 @@ vel = np.arange(-10,10,0.02)
 vel = vel + np.random.normal(0,sd_noise,vel.shape)
 assert len(v1) == len(v2), "rot and vel have different size"
 assert len(vel) == len(vSum), "vel and vSum habe different size, len(vel)=" + str(len(vel)) + " and len(vSum)=" +str(len(vSum)) 
+
+
+def calcAngle(p1, p0=(2.5,2.5)):
+    print("p1: ", p1)
+    if p1[0] == 2.5: p1 = (2.50000000001, *p1[1:])  # handle null division
+    # m = (p1[1]-p0[1])/(p1[0]-p0[0])
+    deltaY = p1[1] - p0[1]
+    deltaX = p1[0] - p0[0]
+    alpha = math.atan2(deltaY, deltaX) * 180 / math.pi
+    print(alpha)
+
+    if (alpha > 135 and alpha < 180) or (alpha < -135 and alpha > -180): return "East"
+    if alpha < -45 and alpha > -134: return "North"
+    if (alpha > 0 and alpha < 44) or (alpha > -44 and alpha < 0): return "West"
+    if alpha > 45 and alpha < 134: return "South"
+    else: return "Failure!!!"
+
+def randomPoint():
+    x = random.uniform(2,3)
+    y = random.uniform(2,3)
+    p = (x,y)
+    return p
+
+    
 
 def splitData():
 
@@ -79,7 +104,7 @@ print("Coefficient of determination (Bestimmtheitsmaß): %.6f" % r2_score(vel_te
 
 # Plot outputs
 plt.scatter(vSum_test, vel_test)
-plt.plot(vSum_test, vel_pred, linewidth=3)
+plt.plot(vSum_test, vel_pred, linewidth=3, c="red")
 
 plt.xticks(())
 plt.yticks(())
@@ -89,3 +114,10 @@ plt.xlabel("Sum of the two voltage values")
 plt.ylabel("Velocity in m/s")
 
 plt.show()
+
+
+# calcAngle test
+for x in range(10):
+    print("\n")
+    p = randomPoint()
+    print(calcAngle(p))
