@@ -7,7 +7,7 @@ import math
 
 # get the data
 
-sd_noise = 0.5                                                         # noise power (=standard deviation)
+sd_noise = 0.5                                                            # noise power (=standard deviation)
 
 # v1 =np.array([2.5, 2.6 ,2.7 ,2.8 ,2.9 ,3.0, 2.4, 2.3, 2.2, 2.1, 2.0, 1.9, 1.8, 2.5, 2.6 ,2.7 ,2.8 ,2.9 ,3.0, 2.5])
 # v1 = v1 + np.random.normal(0,sd_noise,v1.shape)                         # generate noisy target values 
@@ -23,27 +23,30 @@ print("vSum", vSum)
 vDif = vSum - 5
 print("vDif: ", vDif)
 
+vPoints = [(v1[i],v2[i]) for i in range(len(v1))]
+
 # vel = np.array([0, 1, 2, 3, 4, 5, -1, -2, -3, -4, -5, -6, -7, 0, 0 ,0 ,0 ,0, 0, 0])
 # vel = vel + np.random.normal(0,sd_noise,vel.shape)                      # generate noisy target values 
-vel = np.arange(-10,10,0.02)
+vel = np.arange(-11,9,0.02)
 vel = vel + np.random.normal(0,sd_noise,vel.shape)
 assert len(v1) == len(v2), "rot and vel have different size"
 assert len(vel) == len(vSum), "vel and vSum habe different size, len(vel)=" + str(len(vel)) + " and len(vSum)=" +str(len(vSum)) 
 
 
 def calcAngle(p1, p0=(2.5,2.5)):
-    print("p1: ", p1)
+    # print("p1: ", p1)
     if p1[0] == 2.5: p1 = (2.50000000001, *p1[1:])  # handle null division
     # m = (p1[1]-p0[1])/(p1[0]-p0[0])
     deltaY = p1[1] - p0[1]
     deltaX = p1[0] - p0[0]
     alpha = math.atan2(deltaY, deltaX) * 180 / math.pi
+    print("Point: ", p1)
     print(alpha)
 
-    if (alpha > 135 and alpha < 180) or (alpha < -135 and alpha > -180): return "East"
-    if alpha < -45 and alpha > -134: return "North"
-    if (alpha > 0 and alpha < 44) or (alpha > -44 and alpha < 0): return "West"
-    if alpha > 45 and alpha < 134: return "South"
+    if (alpha >= 135 and alpha < 180) or (alpha < -135 and alpha > -180): return "East"
+    if alpha <= -45 and alpha > -134: return "North"
+    if (alpha >= 0 and alpha < 45) or (alpha > -44 and alpha < 0): return "West"
+    if alpha >= 45 and alpha < 135: return "South"
     else: return "Failure!!!"
 
 def randomPoint():
@@ -117,7 +120,7 @@ plt.show()
 
 
 # calcAngle test
-for x in range(10):
+for x in vPoints:
     print("\n")
-    p = randomPoint()
-    print(calcAngle(p))
+    # p = randomPoint()
+    print(calcAngle(x))
