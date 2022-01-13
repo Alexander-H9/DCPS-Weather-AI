@@ -12,74 +12,83 @@ class Sensor:
         # calibrate becomes True whem zero_crossing is detected
         self.calibrate = False
 
-sen = Sensor()
-db = InfluxDB()
+def degM(measurements, x):
+
+    sen = Sensor()
+    db = InfluxDB()
 
 
-channel1 = 37       # gpio pin 26
-channel2 = 36       # gpio pin 16
-channel3 = 32       # gpio pin 12 zero crossing
+    channel1 = 37       # gpio pin 26
+    channel2 = 36       # gpio pin 16
+    channel3 = 32       # gpio pin 12 zero crossing
 
-def calculate_degree(counter):
-    deg = counter/1.388
-    return int(deg)
+    def calculate_degree(counter):
+        deg = counter/1.388
+        return int(deg)
 
-def callback_ch3(channel3):
-    if sen.calibrate == False:
-        sen.calibrate = True
-        print("Sensor is calibrated, DB connection can start now")
+    def callback_ch3(channel3):
+        if sen.calibrate == False:
+            sen.calibrate = True
+            print("Sensor is calibrated, DB connection can start now")
 
-GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(channel1, GPIO.IN)
-GPIO.setup(channel2, GPIO.IN)
-GPIO.setup(channel3, GPIO.IN)
-GPIO.add_event_detect(channel3, GPIO.RISING, callback=callback_ch3)
+    GPIO.setup(channel1, GPIO.IN)
+    GPIO.setup(channel2, GPIO.IN)
+    GPIO.setup(channel3, GPIO.IN)
+    GPIO.add_event_detect(channel3, GPIO.RISING, callback=callback_ch3)
 
-phase_0 = GPIO.input(channel1)
-count = 0
-dir = 0
-i = 0
-deg = 0
-trigger = 0
+    phase_0 = GPIO.input(channel1)
+    count = 0
+    dir = 0
+    i = 0
+    deg = 0
+    trigger = 0
 
-while True:
-    sen.zero_crossing = GPIO.input(channel3)
-    sen.phase_1 = GPIO.input(channel1)
-
-    if sen.zero_crossing == 1 and trigger == 0:
-        trigger = 1
-        if count > 500 or count < -500:
-            count = 500
-        count = 0
-
-    if sen.zero_crossing == 0:  
-        trigger = 0
-    
-    if sen.phase_1 == 1 and phase_0 == 0:
-        i += 1
+    while True:
         
-        sen.phase_2 = GPIO.input(channel2)
+        sen.zero_crossing = GPIO.input(channel3)
+        sen.phase_1 = GPIO.input(channel1)
+
+        if sen.zero_crossing == 1 and trigger == 0:
+            trigger = 1
+            if count > 500 or count < -500:
+                count = 500
+            count = 0
+
+        if sen.zero_crossing == 0:  
+            trigger = 0
         
-        if sen.phase_2 == 0:
-            dir = 0
-            count += 1
-        else:
-            dir = 1
-            count -= 1
+        if sen.phase_1 == 1 and phase_0 == 0:
+            i += 1
+            
+            sen.phase_2 = GPIO.input(channel2)
+            
+            if sen.phase_2 == 0:
+                dir = 0
+                count += 1
+            else:
+                dir = 1
+                count -= 1
 
-    phase_0 = sen.phase_1
+        phase_0 = sen.phase_1
+        
+        if i > 50:
+            deg = calculate_degree(count)
+            # let degree be always positive
+            print("org-deg: ", deg)
+            if deg < 0:
+                deg = 360+deg
+            print("deg: ", deg)
+            i = 0
+            #deg = calculate_degree(count)
+            #print("deg: ", deg)
+
+            if sen.calibrate:
+                if x == 0:
+                    db.sendToInfluxDB("anemometerTest", deg)
+                elif x == 1:
+                    measurements[3] = deg
+                    # print("deg=",deg)
+
     
-    if i > 50:
-        deg = calculate_degree(count)
-        # let degree be always positive
-        print("org-deg: ", deg)
-        if deg < 0:
-            deg = 360+deg
-        print("deg: ", deg)
-        i = 0
-        #deg = calculate_degree(count)
-        #print("deg: ", deg)
-
-        if sen.calibrate:
-            db.sendToInfluxDB("anemometerTest", deg)
