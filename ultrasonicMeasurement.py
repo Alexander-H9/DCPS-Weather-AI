@@ -28,21 +28,26 @@ def voltM(measurements, x):
 					CH3_vol = adc.readADCvoltage(i2cAddress, CH3)
 
 					# output channel reads
-					print("CH0-Value: " + str(CH0_val))
-					print("CH0-Voltage: " + str(CH0_vol) + " V")
-					print("CH1-Value: " + str(CH1_val))
-					print("CH1-Voltage: " + str(CH1_vol) + " V")
-					print("CH2-Value: " + str(CH2_val))
-					print("CH2-Voltage: " + str(CH2_vol) + " V")
-					print("CH3-Value: " + str(CH3_val))
-					print("CH3-Voltage: " + str(CH3_vol) + " V")
-					print("-----------------------------------------------------")
+					if x == 0:
+						print("CH0-Value: " + str(CH0_val))
+						print("CH0-Voltage: " + str(CH0_vol) + " V")
+						print("CH1-Value: " + str(CH1_val))
+						print("CH1-Voltage: " + str(CH1_vol) + " V")
+						print("CH2-Value: " + str(CH2_val))
+						print("CH2-Voltage: " + str(CH2_vol) + " V")
+						print("CH3-Value: " + str(CH3_val))
+						print("CH3-Voltage: " + str(CH3_vol) + " V")
+						print("-----------------------------------------------------")
 
 					# send data to database
 					if x == 0:
 						db.sendToInfluxDB("ultrasonic2", CH0_vol, CH1_vol)
+						sleep(1)
 					elif x == 1:
 						measurements[0] = CH0_vol 
 						measurements[1] = CH1_vol 
-					# wait
-					sleep(0.1)
+						# wait
+						sleep(0.1)
+
+# measurements = [0.0]*4
+# voltM(measurements, 0)
