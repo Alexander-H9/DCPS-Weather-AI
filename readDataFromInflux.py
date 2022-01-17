@@ -30,7 +30,8 @@ def readFromInflux():
     print(ifclient.get_list_database())
 
     ifclient.switch_database('home')
-    dataSet = (ifclient.query('select v1,v2,vel,deg from dataTest6;'))
+    dataSet = (ifclient.query('select v1,v2,vel,deg from finalTest01;'))
+    # return dataSet
     v1 = []
     v2 = []
     vel = []
@@ -46,16 +47,16 @@ def readFromInflux():
     return v1,v2,vel,deg
 
 
-# get/create the data
-sd_noise = 0.5                                                            # noise power (=standard deviation)
-v1 = np.arange(-3,7,1)
-v1 = v1 + np.random.normal(0,sd_noise,v1.shape)
-v2 = np.arange(-3,7,1)
-v2 = v2 + np.random.normal(0,sd_noise,v2.shape)
-vel = np.arange(-11,9,2)
-vel = vel + np.random.normal(0,sd_noise,vel.shape)
-deg = np.arange(0,360,36)
-deg = deg + np.random.normal(0,sd_noise,deg.shape)
+# # get/create the data
+# sd_noise = 0.5                                                            # noise power (=standard deviation)
+# v1 = np.arange(-3,7,1)
+# v1 = v1 + np.random.normal(0,sd_noise,v1.shape)
+# v2 = np.arange(-3,7,1)
+# v2 = v2 + np.random.normal(0,sd_noise,v2.shape)
+# vel = np.arange(-11,9,2)
+# vel = vel + np.random.normal(0,sd_noise,vel.shape)
+# deg = np.arange(0,360,36)
+# deg = deg + np.random.normal(0,sd_noise,deg.shape)
 
 # influx configuration
 ifuser = "grafana"

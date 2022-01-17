@@ -9,10 +9,11 @@ def windM(measurements, x):
 
 	# gpio pin 6
 	pin = 31    
-	time_interval = 3 		# intervall of sending data to influx in seconds   
+	time_interval = 10 		# intervall of sending data to influx in seconds   
 
 	def callbackPin(pin):
-		print("Umdrehung")
+		pass
+		# print("Umdrehung")
 
 	# Set up GPIO
 	GPIO.setmode(GPIO.BOARD)

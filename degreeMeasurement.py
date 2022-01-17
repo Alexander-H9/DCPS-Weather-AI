@@ -76,10 +76,10 @@ def degM(measurements, x):
         if i > 50:
             deg = calculate_degree(count)
             # let degree be always positive
-            print("org-deg: ", deg)
+            # print("org-deg: ", deg)
             if deg < 0:
                 deg = 360+deg
-            print("deg: ", deg)
+            # print("deg: ", deg)
             i = 0
             #deg = calculate_degree(count)
             #print("deg: ", deg)

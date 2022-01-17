@@ -43,11 +43,13 @@ def voltM(measurements, x):
 					if x == 0:
 						db.sendToInfluxDB("ultrasonic2", CH0_vol, CH1_vol)
 						sleep(1)
-					elif x == 1:
+					if x == 1:
 						measurements[0] = CH0_vol 
 						measurements[1] = CH1_vol 
+						# print(measurements[0])
+						# print(measurements[1])
 						# wait
-						sleep(0.1)
+						# sleep(0.1)
 
 # measurements = [0.0]*4
-# voltM(measurements, 0)
+# voltM("measurements", 0)
